@@ -1,0 +1,19 @@
+{
+  "name": "naati-software",
+  "version": "1.0.0",
+  "description": "This is a private website to upload naati-dialogues for students for practicing. ",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tarakaprabhuchinta/naati-software.git"
+  },
+  "author": "Vijay",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/tarakaprabhuchinta/naati-software/issues"
+  },
+  "homepage": "https://github.com/tarakaprabhuchinta/naati-software#readme"
+}
