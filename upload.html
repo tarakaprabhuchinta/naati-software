@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Upload</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script>
+    // Code to make the name of the file appear on select
+    $(".custom-file-input").on("change", function() {
+      var fileName = $(this).val().split("\\").pop();
+      $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+    </script>
+  <style>
+    .card-center {
+  margin: auto;
+  padding: 13% 0;
+    }
+  body{
+        background-color: #DCDCDC;
+    }
+    h2{
+        color: #001f3f;
+    }
+  </style>
+</head>
+<body>
+    <div class="card card-center" style="width:30%">
+        <div class="card-body">
+    <h2>Upload Dialouges</h2><br>
+    <form>
+        <div class="form-group">
+          <label>Enter dialogue name</label>
+          <input type="email" class="form-control" id="dialogue-name"  placeholder="Enter dialogue name">
+        </div>
+        <div class="custom-file">
+            <label class="custom-file-label" for="customFile">Choose document</label>
+            <input type="file" class="custom-file-input" id="upload-document">
+          </div><br>
+        <div class="custom-file">
+            <label class="custom-file-label" for="customFile">Choose audio</label>
+            <input type="file" class="custom-file-input" id="upload-audio">
+          </div>  <br>
+        <button type="submit" class="btn btn-primary">Upload</button>
+      </form>
+    </div>
+    </div>  
+</body>
+</html>
