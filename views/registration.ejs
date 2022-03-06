@@ -7,6 +7,24 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script>
+    //jquery form validation
+    $(document).ready (function () {  
+ $('#form').submit (function (e) {
+    var password = $('#password').val(); 
+    var repeat = $('#repeat-password').val();
+  $(".error").remove();  
+  if (password.length < 6) {  
+      $('#password').after('<span class="error" style="color:red">Password must be at least 6 characters long</span>'); 
+      e.preventDefault();   
+    }  
+    if (!(password === repeat)) {  
+      $('#repeat-password').after('<span class="error" style="color:red">Retype password must match above password.</span>');  
+      e.preventDefault();  
+    }   
+});  
+});  
+</script>  
   <style>
     .card-center {
   margin: auto;
@@ -24,18 +42,18 @@
     <div class="card card-center" style="width:30%">
         <div class="card-body">
     <h2>Naati Telugu Registration</h2><br>
-    <form>
+    <form action="/register-form" method="post" id="form">
         <div class="form-group">
           <label>Email address</label>
-          <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+          <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Enter email" required>
         </div>
         <div class="form-group">
           <label>Password</label>
-          <input type="password" class="form-control" id="password" placeholder="Password">
+          <input type="password" class="form-control" name="password" id="password" placeholder="Password">
         </div>
         <div class="form-group">
             <label>Repeat password</label>
-            <input type="password" class="form-control" id="repeat-password" placeholder="Repeat password">
+            <input type="password" class="form-control" name="repeat-password" id="repeat-password" placeholder="Repeat password">
           </div>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
@@ -43,3 +61,4 @@
     </div>  
 </body>
 </html>
+
