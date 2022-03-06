@@ -2,6 +2,10 @@ const express = require('express');
 const app = express();
 const mysql = require('mysql');
 const parser = require('body-parser');
+const session = require('express-session')
+const http = require('http'); // or 'https' for https:// URLs
+const fs = require('fs');
+
 
 
 try{
@@ -21,24 +25,43 @@ catch(err){
 }
 app.set('view engine', 'ejs');
 app.use(parser.urlencoded({ extended: true }));
+app.use(session({
+    secret: 'scaredy-cat',
+    resave: false,
+    saveUninitialized: false,
+    // set cookie age for 5 hours.
+    cookie: { maxAge: 3600000*5}
+  }))
 app.get(['/','/login'], function(req, res){
-   res.render('login')
+    if(!req.session.login){
+        res.render('login')
+    }
+    else{ 
+    res.render('dialogues-list')
+    }
 });
 app.post('/login-user', function(req, res){
    email = req.body.email
    password = req.body.password
    try {
-    var sql = "SELECT * FROM `naati database`.`users` WHERE `email`='"+email+"' AND `password`='"+password+"'";
+    var sql = "SELECT * FROM `naati database`.`users` WHERE `email`='"+email+"' AND `password`='"+password+"' AND `active`='"+1+"'";
+    console.log(sql)
     con.query(sql, function (err, result) {
     if (err){
         console.log(err)
     }
     else{
     if( result.length == 1){
-        res.send("user can be logged in")
+        req.session.email = email
+        if(req.session.email === 'tarakaprabhuchinta@gmail.com'){
+            req.session.admin = true
+        }
+        req.session.login = true
+        console.log(req.session)
+        res.render('dialogues-list')
     }    
     else{
-        res.send("user not registered yet")
+        res.render('register-failure')
     }
     }
     });
@@ -46,8 +69,19 @@ app.post('/login-user', function(req, res){
        console.log(error)
    }
 });
+app.get(['/logout'], function(req, res){
+    req.session.destroy(function(err) {
+        // cannot access session here
+        res.render('login')
+      });
+ });
  app.get(['/register'], function(req, res){
-    res.render('registration')
+    if(!req.session.login){
+        res.render('registration')
+    }
+    else{ 
+    res.render('logout-first')
+    }
  });
  app.post('/register-form', function (req, res) {  
      email = req.body.email
@@ -69,13 +103,51 @@ app.post('/login-user', function(req, res){
         }
  });
  app.get(['/upload'], function(req, res){
+    if(!req.session.login){
+        res.render('login')
+    }
+    else{  
+    if(!req.session.admin){
+        res.send("You dont have admin acccess")
+    }
+    else{
     res.render('upload')
+    }
+    }
+ });
+ app.get(['/vocab'], function(req, res){
+    if(!req.session.login){
+        res.render('login')
+    }
+    else{ 
+       const file = __dirname+"/materials/vocab.pdf"
+       res.download(file); // Set disposition and send it.
+    }
+ });
+ app.get(['/recentq'], function(req, res){
+    if(!req.session.login){
+        res.render('login')
+    }
+    else{ 
+       const file = __dirname+"/materials/recent questions.docx"
+       res.download(file); // Set disposition and send it.
+    }
  });
  app.get(['/list'], function(req, res){
+    if(!req.session.login){
+        res.render('login')
+    }
+    else{ 
     res.render('dialogues-list')
+    }
  });
  app.get(['/view'], function(req, res){
+    if(!req.session.login){
+        res.render('login')
+    }
+    else{  
     res.render('full-dialogue')
+    }
  });
  app.get('*', function(req, res) {
    res.render('404')
