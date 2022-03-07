@@ -33,8 +33,14 @@ table.table-bordered > tbody > tr > td{
   <nav class="navbar navbar-inverse">
     <div class="container-fluid">
       <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
         <a class="navbar-brand" href="/">naati-telugu</a>
       </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
         <li><a href="https://www.naati.com.au/services/ccl/">Exam Overview</a></li>
         <li><a href="/vocab">Download Vocab</a></li>
@@ -44,6 +50,7 @@ table.table-bordered > tbody > tr > td{
       <ul class="nav navbar-nav navbar-right">
         <li><a href="/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
       </ul>
+      </div>
     </div>
   </nav>
     <div class="card card-center" style="width:30%">
@@ -55,15 +62,13 @@ table.table-bordered > tbody > tr > td{
             <th>#</th>
             <th>Dialogues</th>
           </tr>
-        </thead>  
+        </thead>
+        <% for(var i = 0; i < data.length; i++) {  %>
           <tr>
-            <td>1</td>
-            <td>Annual parent meeting</td>
+            <td><%= i+1 %></td>
+            <td> <a href="<%= 'dialogue/'+(i+1) %>"> <%= data[i] %> </a> </td>
           </tr>
-          <tr>
-            <td>2</td>
-            <td>Annual parent meeting</td>
-          </tr>
+          <% } %>
       </table>
     </div>
     </div>  

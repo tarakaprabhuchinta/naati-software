@@ -5,8 +5,9 @@ const parser = require('body-parser');
 const session = require('express-session')
 const http = require('http'); // or 'https' for https:// URLs
 const fs = require('fs');
-
-
+const fileUpload = require('express-fileupload');
+var parse = require('url-parse')
+var files;
 
 try{
 //mysql connection
@@ -23,6 +24,13 @@ var con = mysql.createConnection({
 catch(err){
     console.log("cannot connect to database"+err)
 }
+try {
+    files = fs.readdirSync(__dirname+'/materials/docs/');
+    //replace .html in array
+    files = files.map(x => x.replace('.html',''));
+} catch (error) {
+    console.log(error)
+}
 app.set('view engine', 'ejs');
 app.use(parser.urlencoded({ extended: true }));
 app.use(session({
@@ -31,13 +39,18 @@ app.use(session({
     saveUninitialized: false,
     // set cookie age for 5 hours.
     cookie: { maxAge: 3600000*5}
-  }))
+  }));
+  app.use(fileUpload({
+      //limits upload size by 4mb
+    limits: { fileSize: 1048576*4 },
+  }));  
+  app.use(express.static('materials/audio'))
 app.get(['/','/login'], function(req, res){
     if(!req.session.login){
         res.render('login')
     }
     else{ 
-    res.render('dialogues-list')
+        res.render('dialogues-list',{data: files})
     }
 });
 app.post('/login-user', function(req, res){
@@ -58,7 +71,7 @@ app.post('/login-user', function(req, res){
         }
         req.session.login = true
         console.log(req.session)
-        res.render('dialogues-list')
+        res.render('dialogues-list',{data: files})
     }    
     else{
         res.render('register-failure')
@@ -115,6 +128,39 @@ app.get(['/logout'], function(req, res){
     }
     }
  });
+ app.post(['/upload-files'], function(req, res){
+    if(!req.session.login){
+        res.render('login')
+    }
+    else{ 
+        let docFile;
+        let audioFile;
+        let uploadPath;
+        if (!req.files || Object.keys(req.files).length === 0) {
+            return res.status(400).send('No files were uploaded.');
+          }
+         // The name of the input field is used to retrieve the uploaded file
+         docFile = req.files.document;
+         uploadPath = __dirname + '/materials/docs/' + req.body.dialogue+'.html';
+
+          // Use the mv() method to place the file somewhere on your server
+        docFile.mv(uploadPath, function(err) {
+            if (err)
+              return res.status(500).send(err);
+              });
+        // The name of the input field is used to retrieve the uploaded file
+        audioFile = req.files.audio;
+        uploadPath = __dirname + '/materials/audio/' + req.body.dialogue+'.mp3';
+
+         // Use the mv() method to place the file somewhere on your server
+        audioFile.mv(uploadPath, function(err) {
+            if (err)
+              return res.status(500).send(err);
+          });        
+        res.render('upload-success')
+    }
+
+ });
  app.get(['/vocab'], function(req, res){
     if(!req.session.login){
         res.render('login')
@@ -138,16 +184,25 @@ app.get(['/logout'], function(req, res){
         res.render('login')
     }
     else{ 
-    res.render('dialogues-list')
+        res.render('dialogues-list',{data: files})
     }
  });
- app.get(['/view'], function(req, res){
+ app.get(['/dialogue/*'], function(req, res){
     if(!req.session.login){
         res.render('login')
     }
-    else{  
-    res.render('full-dialogue')
-    }
+    else{
+    var url = parse(req.originalUrl) 
+    var pathname = url.pathname.replace('/dialogue/','')     
+    var client_audio = files[pathname-1]+'.mp3';
+    var client_doc = __dirname+'/materials/docs/'+files[pathname-1]+'.html';
+    try {
+        fileData = fs.readFileSync(client_doc);
+        res.render('full-dialogue', {audioData: 'http://'+req.get('host')+'/'+client_audio, fileData})
+    } catch (error) {
+        console.log(error)
+    }   
+     }
  });
  app.get('*', function(req, res) {
    res.render('404')
