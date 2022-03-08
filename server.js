@@ -26,6 +26,7 @@ catch(err){
 }
 try {
     files = fs.readdirSync(__dirname+'/materials/docs/');
+    files = files.filter(item => !(/(^|\/)\.[^\/\.]/g).test(item));
     //replace .html in array
     files = files.map(x => x.replace('.html',''));
 } catch (error) {
