@@ -11,22 +11,18 @@ var files;
 var options = {
 	host: 'localhost',
 	port: 3306,
-	user: 'root',
+	user: 'wwwnaati_tarak',
 	password: 'Ta@234824',
-	database: 'naati database'
+	database: 'wwwnaati_database'
 };
-var sessionStore = new MySQLStore(options);
 try{
 //mysql connection
-var con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "Ta@234824"
-  });
+var con = mysql.createConnection(options);
   con.connect(function(err) {
     if (err) throw err;
     console.log("Connected!");
   });
+  var sessionStore = ({}, connection);
 }
 catch(err){
     console.log("cannot connect to database"+err)
@@ -66,11 +62,11 @@ app.post('/login-user', function(req, res){
    email = req.body.email
    password = req.body.password
    try {
-    var sql = "SELECT * FROM `naati database`.`users` WHERE `email`='"+email+"' AND `password`='"+password+"' AND `active`='"+1+"'";
+    var sql = "SELECT * FROM `wwwnaati_database`.`users` WHERE `email`='"+email+"' AND `password`='"+password+"' AND `active`='"+1+"'";
     console.log(sql)
     con.query(sql, function (err, result) {
     if (err){
-            res.send(err)
+            console.log(err)
     }
     else{
     if( result.length == 1){
@@ -109,10 +105,10 @@ app.get(['/logout'], function(req, res){
      email = req.body.email
      password = req.body.password
     try{
-        var sql = "INSERT INTO `naati database`.`users` (`email`, `password`) VALUES ('"+email+"','"+password+"')";
+        var sql = "INSERT INTO `wwwnaati_database`.`users` (`email`, `password`) VALUES ('"+email+"','"+password+"')";
         con.query(sql, function (err, result) {
         if (err){
-            res.send(err)
+            console.log(err)
         }
         else{
         res.render('register-success')    
@@ -121,7 +117,7 @@ app.get(['/logout'], function(req, res){
         });
         }
         catch(err){
-            res.send(err)
+            console.log(err)
         }
  });
  app.get(['/upload'], function(req, res){
@@ -207,13 +203,13 @@ app.get(['/logout'], function(req, res){
     var client_doc = __dirname+'/materials/docs/'+files[pathname-1]+'.html';
     try {
         fileData = fs.readFileSync(client_doc);
-        res.render('full-dialogue', {audioData: 'http://'+req.get('host')+'/'+client_audio, fileData})
+        res.render('full-dialogue', {audioData: 'https://'+req.get('host')+'/'+client_audio, fileData})
     } catch (error) {
-        res.send(error)
+        console.log(error)
     }   
      }
  });
  app.get('*', function(req, res) {
    res.render('404')
   });
-app.listen(8070);
+app.listen();
