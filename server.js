@@ -12,7 +12,7 @@ var options = {
 	host: 'localhost',
 	port: 3306,
 	user: 'wwwnaati_tarak',
-	password: 'Ta@234824',
+	password: 'REDACTED',
 	database: 'wwwnaati_database'
 };
 try{
