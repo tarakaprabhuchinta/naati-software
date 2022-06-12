@@ -9,12 +9,14 @@ var MySQLStore = require('express-mysql-session')(session);
 var parse = require('url-parse')
 var files;
 var options = {
-	host: 'localhost',
-	port: 3306,
-	user: 'wwwnaati_tarak',
-	password: 'REDACTED',
-	database: 'wwwnaati_database'
+    host: process.env.MYSQL_URL,
+    port: process.env.MYSQL_PORT,
+    user: process.env.MYSQL_USERNAME,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE
 };
+// disabling x-powered-by to stop attacker from guessing technology
+app.disable("x-powered-by");
 try{
 //mysql connection
 var con = mysql.createConnection(options);
