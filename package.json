@@ -27,6 +27,6 @@
     "url-parse": "^1.5.10"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "nodemon": "2.0.15"
   }
 }
